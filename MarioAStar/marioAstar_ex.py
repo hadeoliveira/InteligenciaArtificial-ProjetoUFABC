@@ -45,8 +45,9 @@ def melhor_filho(tree):
     Entrada: tree, o nó atual da árvore
     Saída:   a tupla (t, f) com t sendo o melhor filho de tree e f a heurística g+h
              retorna None caso o nó seja terminal
-    '''
-    
+    ''' 
+
+
     # Implemente as tarefas abaixo e remove a instrução pass.
     
     # 1) Se o nó é terminal, retorna None
@@ -78,7 +79,10 @@ def checaObj(estado, x):
 def folha(tree):
     """ Verifica se tree é um nó folha. """
     # Um nó folha é aquele que não tem filhos.
-    pass
+    if all(node is None for node in tree.filhos):
+        return True
+    else: 
+        return False
 
 # Joga uma partida usando uma
 # sequência de ações
@@ -159,16 +163,24 @@ def atingiuObj(tree):
     # Complete as tarefas a seguir e remova a instrução pass
     
     # 1) Se o nó é terminal, retorna o valor de eh_obj e a lista vazia de ações
-    
+    if tree.eh_terminal == True:
+        return(tree.eh_objetivo, [])
+
     # 2) Se o conjunto de filhos é None, retorna falso e lista vazia, pois não atingiu o obj
-    
+    if all(node is None for node in tree.filhos):
+        return(False, [])
+
     # 3) Se nenhum dos anteriores retornou, para cada movimento "k" e valor "v" possível do dicionário moves:
     #       chama recursivamente atingiuObj com o filho do movimento "k" e recebe obj, acoes
     #       Se obj for verdadeiro, retorna obj e a lista de acoes concatenado com "v"
+    for k,v in moves.items:
+        objetivo, acoes = atingiuObj(tree.filhos[k]) 
+        if objetivo == True:
+            return (objetivo, acoes.append(k))
     
     # 4) Se chegar ao final do laço sem retorna, retorne falso e vazio
-           
-    
+    return (False, [])
+  
 
 # Gera a árvore utilizando A*
 def astar():
