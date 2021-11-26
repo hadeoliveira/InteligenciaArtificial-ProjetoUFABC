@@ -71,7 +71,7 @@ def heuristica(estado, x):
     dist = np.abs(estNum[:raio+1,raio+2:raio+7]).sum()
     return ((4800 - x)/8) + 0.3*dist
  
-# Verifica se chegamos ao final   
+# Verifica se chegamos ao final    
 def checaObj(estado, x):
     return x>4800
 
