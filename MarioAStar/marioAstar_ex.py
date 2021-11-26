@@ -216,7 +216,7 @@ def astar():
 
     print(f'Retornei,vou entrar no laço com os parametros: {obj,acoes}')
     while not obj:
-        print(f'expandindo com {tree.filhos}')
+        print(f'expandindo no com {tree.filhos}')
         tree, obj = expande(tree, env, mostrar)
         # Grava estado atual da árvore por segurança
         # fw = open('AstarTree.pkl', 'wb')
