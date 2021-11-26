@@ -51,17 +51,30 @@ def melhor_filho(tree):
     # Implemente as tarefas abaixo e remove a instrução pass.
     
     # 1) Se o nó é terminal, retorna None
+    if tree.eh_terminal: 
+        return None
     
     # 2) Se o nó não tem filhos, retorna ele mesmo e seu f
+    if all(filho is None for filho in tree.filhos):
+        return tree, (tree.g + tree.h)
     
     # 3) Para cada filho de tree, aplica melhor_filho e filtra aqueles que resultarem em None
-    
+    for filho in tree.filhos:
+        if filho is not None:
+            melhor_filho(filho)
     # 4) Se todos os filhos resultarem em terminal, marca tree como terminal e retorna None
-    
+    if all(filho.eh_terminal for filho in tree.filhos):
+        tree.eh_terminal = True
+        return None
     # 5) Caso contrário retorna aquele com o menor f
+    else:
+        # Implementar lógica para ordenar lista com menor f dos filhos
+        filhos = []
+        for filho in tree.filhos:
+            filhos.append(filho)
+        menor = sorted(filhos, key= lambda filho: (filho.g + filho.h))
+        return menor[0]
     
-    pass
-
 # Nossa heurística é a quantidade
 # de passos mínimos estimados para
 # chegar ao final da fase
@@ -124,11 +137,18 @@ def expande(tree, env, mostrar):
         # Retorna para a raiz gravando as ações efetuadas
         raiz = filho
         # 1) Enquanto o pai de raiz não for None
+        while raiz.pai is not None:
         # 2) Atribua raiz a uma variável neto
-        # 3) faça raiz = seu próprio pai
+            neto = raiz
+        # 3) faça raiz = seu próprio 
+            raiz = raiz.pai
         # 4) verifique qual a ação de raiz leva ao nó neto
+            for k, v in moves.items():
+                estado = performAction(k, env)
+                if estado == raiz and estado == neto:
+                   acao = k 
         # 5) faça um append dessa ação na lista acoes
-        
+            acoes.append(acao)
         
         # inverte a lista de ações e imprime para debug
         acoes.reverse()
@@ -163,7 +183,7 @@ def atingiuObj(tree):
     # Complete as tarefas a seguir e remova a instrução pass
     
     # 1) Se o nó é terminal, retorna o valor de eh_obj e a lista vazia de ações
-    if tree.eh_terminal == True:
+    if tree.eh_terminal:
         return(tree.eh_objetivo, [])
 
     # 2) Se o conjunto de filhos é None, retorna falso e lista vazia, pois não atingiu o obj
