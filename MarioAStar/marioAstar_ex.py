@@ -59,21 +59,26 @@ def melhor_filho(tree):
         return tree, (tree.g + tree.h)
     
     # 3) Para cada filho de tree, aplica melhor_filho e filtra aqueles que resultarem em None
-    for filho in tree.filhos:
-        if filho is not None:
-            melhor_filho(filho)
+    melhores = []
+    for node, f in tree.filhos.items():
+        melhores.append(melhor_filho(node))
+    melhoresSemNone = filter(lambda filho: filho is not None, melhores)
+    
+    nos = []
+    custos = []
+    for no, custo in melhoresSemNone:
+        nos.append(no)
+        custos.append(custo)
+
     # 4) Se todos os filhos resultarem em terminal, marca tree como terminal e retorna None
-    if all(filho.eh_terminal for filho in tree.filhos):
+    if all(filho.eh_terminal for filho in nos):
         tree.eh_terminal = True
         return None
     # 5) Caso contrário retorna aquele com o menor f
     else:
         # Implementar lógica para ordenar lista com menor f dos filhos
-        filhos = []
-        for filho in tree.filhos:
-            filhos.append(filho)
-        menor = sorted(filhos, key= lambda filho: (filho.g + filho.h))
-        return menor[0]
+        menor = sorted(melhores, key= lambda filho: (filho.g + filho.h))
+        return menor[0] # retorna uma tupla (no, f)
     
 # Nossa heurística é a quantidade
 # de passos mínimos estimados para
