@@ -148,12 +148,10 @@ def expande(tree, env, mostrar):
         # 3) faça raiz = seu próprio 
             raiz = raiz.pai
         # 4) verifique qual a ação de raiz leva ao nó neto
-            for k, v in moves.items():
-                estado = performAction(k, env)
-                if estado == raiz and estado == neto:
-                   acao = k 
+            for acao, filho in tree.filhos.items():
+                if filho == neto:
         # 5) faça um append dessa ação na lista acoes
-            acoes.append(acao)
+                    acoes.append(acao)
         
         # inverte a lista de ações e imprime para debug
         acoes.reverse()
@@ -201,7 +199,7 @@ def atingiuObj(tree):
     for k,v in moves.items:
         objetivo, acoes = atingiuObj(tree.filhos[k]) 
         if objetivo == True:
-            return (objetivo, acoes.append(k))
+            return (objetivo, acoes.append(v))
     
     # 4) Se chegar ao final do laço sem retorna, retorne falso e vazio
     return (False, [])
