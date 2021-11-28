@@ -77,8 +77,8 @@ def melhor_filho(tree):
     # 5) Caso contrário retorna aquele com o menor f
     else:
         # Implementar lógica para ordenar lista com menor f dos filhos
-        menor = sorted(melhores, key= lambda filho: (filho.g + filho.h))
-        return menor[0] # retorna uma tupla (no, f)
+        menor = min(melhores, key= lambda filho: (filho.g + filho.h))
+        return menor # retorna uma tupla (no, f)
     
 # Nossa heurística é a quantidade
 # de passos mínimos estimados para
@@ -91,6 +91,8 @@ def heuristica(estado, x):
  
 # Verifica se chegamos ao final    
 def checaObj(estado, x):
+    if(x > 4800):
+        print('CHEGAMOS NO OBJETIVO FINAL')
     return x>4800
 
 # Verifica se um nó é uma folha 
@@ -142,7 +144,7 @@ def expande(tree, env, mostrar):
         # Retorna para a raiz gravando as ações efetuadas
         raiz = filho
         # 1) Enquanto o pai de raiz não for None
-        while raiz.pai is not None:
+        while raiz.pai != None:
         # 2) Atribua raiz a uma variável neto
             neto = raiz
         # 3) faça raiz = seu próprio 
@@ -199,7 +201,7 @@ def atingiuObj(tree):
     for k,v in moves.items:
         objetivo, acoes = atingiuObj(tree.filhos[k]) 
         if objetivo == True:
-            return (objetivo, acoes.append(v))
+            return (objetivo, acoes.append(k))
     
     # 4) Se chegar ao final do laço sem retorna, retorne falso e vazio
     return (False, [])
