@@ -111,6 +111,7 @@ def emula(acoes, env, mostrar):
     env.reset()
 
     while len(acoes)>0 and (not env.data.is_done()):
+        print(env.data.is_done())
         a = acoes.pop(0)
         estado, xn, y = getState(getRam(env), raio)
         performAction(a, env)
@@ -171,7 +172,6 @@ def expande(tree, env, mostrar):
         obj             = obj or checaObj(estado, x)
         filho.filhos[k] = Tree(estado, g=filho.g + 1, h=heuristica(estado,x),
                                 pai=filho, terminal=over, obj=obj)
-    
     print('FALTA: ', heuristica(estado, maxX))
         
     return raiz, obj
