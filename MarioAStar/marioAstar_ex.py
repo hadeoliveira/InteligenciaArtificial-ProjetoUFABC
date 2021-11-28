@@ -54,28 +54,32 @@ def melhor_filho(tree):
     # 1) Se o nó é terminal, retorna None
     if tree.eh_terminal:
         return None
-    # 2) Se o nó não tem filhos, retorna ele mesmo e seu f
-    if not tree.filhos:
-        return tree, tree.h
-    # 3) Para cada filho de tree, aplica melhor_filho e filtra aqueles que resultarem em None
-    nonefilho = []
-    for filho, movimento in zip(tree.filhos.values(), tree.filhos.keys()):
 
-        melhor = melhor_filho(filho)
-        if melhor[0].filhos == None:
-            nonefilho.append(filho)
+    # 2) Se o nó não tem filhos, retorna ele mesmo e seu f
+    if all(filho is None for filho in tree.filhos):
+        return tree, (tree.g + tree.h)
+
+    # 3) Para cada filho de tree, aplica melhor_filho e filtra aqueles que resultarem em None
+    melhores = []
+    for node, f in tree.filhos.items():
+        melhores.append(melhor_filho(node))
+    melhoresSemNone = filter(lambda filho: filho is not None, melhores)
+
+    nos = []
+    custos = []
+    for no, custo in melhoresSemNone:
+        nos.append(no)
+        custos.append(custo)
 
     # 4) Se todos os filhos resultarem em terminal, marca tree como terminal e retorna None
-    if all([i.eh_terminal for i in nonefilho]):
+    if all(filho.eh_terminal for filho in nos):
         tree.eh_terminal = True
         return None
-
     # 5) Caso contrário retorna aquele com o menor f
     else:
-        x = sorted(nonefilho, key=lambda i: i.h)[0]
-        return x, x.h + x.g
-
-    pass
+        # Implementar lógica para ordenar lista com menor f dos filhos
+        menor = sorted(melhores, key=lambda filho: (filho.g + filho.h))
+        return menor[0]  # retorna uma tupla (no, f)
 
 
 # Nossa heurística é a quantidade
@@ -190,6 +194,10 @@ def atingiuObj(tree):
 
     # 1) Se o nó é terminal, retorna o valor de eh_obj e a lista vazia de ações
     if tree.eh_terminal:
+        return (tree.eh_objetivo, [])
+
+    # 1) Se o nó é terminal, retorna o valor de eh_obj e a lista vazia de ações
+    if tree.eh_terminal:
         return (tree.eh_obj, [])
     # 2) Se o conjunto de filhos é None, retorna falso e lista vazia, pois não atingiu o obj
     if not tree.filhos:
@@ -197,6 +205,10 @@ def atingiuObj(tree):
     # 3) Se nenhum dos anteriores retornou, para cada movimento "k" e valor "v" possível do dicionário moves:
     #       chama recursivamente atingiuObj com o filho do movimento "k" e recebe obj, acoes
     #       Se obj for verdadeiro, retorna obj e a lista de acoes concatenado com "v"
+    for k, v in moves.items:
+        objetivo, acoes = atingiuObj(tree.filhos[k])
+        if objetivo == True:
+            return (objetivo, acoes.append(v))
 
     # 4) Se chegar ao final do laço sem retorna, retorne falso e vazio
 
