@@ -55,13 +55,15 @@ def melhor_filho(tree):
         return None
     
     # 2) Se o nó não tem filhos, retorna ele mesmo e seu f
-    if all(filho is None for filho in tree.filhos):
+    if tree.filhos is None:
         return tree, (tree.g + tree.h)
     
     # 3) Para cada filho de tree, aplica melhor_filho e filtra aqueles que resultarem em None
     melhores = []
-    for node, f in tree.filhos.items():
-        melhores.append(melhor_filho(node))
+#    for node, f in tree.filhos.items():
+#        melhores.append(melhor_filho(node))
+    for acao, movimento in moves.items():
+        melhores.append(melhor_filho(tree.filhos[acao]))
     melhoresSemNone = filter(lambda filho: filho is not None, melhores)
     
     nos = []
@@ -77,8 +79,8 @@ def melhor_filho(tree):
     # 5) Caso contrário retorna aquele com o menor f
     else:
         # Implementar lógica para ordenar lista com menor f dos filhos
-        menor = min(melhores, key= lambda filho: (filho.g + filho.h))
-        return menor # retorna uma tupla (no, f)
+        menor, f = min(melhores, key= lambda filho: (filho.g + filho.h))
+        return menor, f # retorna uma tupla (no, f)
     
 # Nossa heurística é a quantidade
 # de passos mínimos estimados para
@@ -144,14 +146,14 @@ def expande(tree, env, mostrar):
         # Retorna para a raiz gravando as ações efetuadas
         raiz = filho
         # 1) Enquanto o pai de raiz não for None
-        while raiz.pai != None:
+        while raiz.pai is not None:
         # 2) Atribua raiz a uma variável neto
             neto = raiz
         # 3) faça raiz = seu próprio 
             raiz = raiz.pai
         # 4) verifique qual a ação de raiz leva ao nó neto
-            for acao, filho in tree.filhos.items():
-                if filho == neto:
+            for acao, movimento in moves.items():
+                if raiz.filhos[acao] == neto:
         # 5) faça um append dessa ação na lista acoes
                     acoes.append(acao)
         
@@ -201,7 +203,7 @@ def atingiuObj(tree):
     for k,v in moves.items:
         objetivo, acoes = atingiuObj(tree.filhos[k]) 
         if objetivo == True:
-            return (objetivo, acoes.append(k))
+            return (objetivo, acoes.append(v))
     
     # 4) Se chegar ao final do laço sem retorna, retorne falso e vazio
     return (False, [])
