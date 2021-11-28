@@ -137,13 +137,13 @@ def expande(nos,acao,env,mostrar):
     maxX            = max(x, 0)
     obj = False
     obj             = obj or checaObj(estado, x)
-    no              = Tree(estado, g=nos.g + 1, h=heuristica(estado,x),
+    nos.filhos[acao]              = Tree(estado, g=nos.g + 1, h=heuristica(estado,x),
                             pai=nos, terminal=over, obj=obj)
-    return no
+    return no.filho[acao]
 # Expande a árvore utilizando a heurística
 def argmin(nos):
-    x = min(nos, key=lambda i: i.values().h)
-    print(f'min de nos = {x}')
+    
+    print(f'min de nos = {nos}')
     input('wait')
     return 
 
@@ -157,7 +157,8 @@ def buscaGulosa(nos,env,mostrar):
         sl[a] = expande(no,a,env,mostrar) 
     if any(atingiuObj(s) for s in sl):
         return filter(atingiuObj,sl)[0]
-
+    print(no.g)
+    print(no.filhos)
     if len(nos) == 0:
         return None
     return buscaGulosa(sl,env,mostrar)
