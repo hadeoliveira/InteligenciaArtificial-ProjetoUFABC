@@ -137,9 +137,10 @@ def expande(nos,acao,env,mostrar):
     maxX            = max(x, 0)
     obj = False
     obj             = obj or checaObj(estado, x)
+    nos.filhos = {}
     nos.filhos[acao]              = Tree(estado, g=nos.g + 1, h=heuristica(estado,x),
                             pai=nos, terminal=over, obj=obj)
-    return no.filho[acao]
+    return nos.filhos[acao]
 # Expande a árvore utilizando a heurística
 def argmin(nos):
     
