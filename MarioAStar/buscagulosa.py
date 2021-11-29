@@ -88,78 +88,85 @@ def checaObj(estado, x):
     return x>4800
 
 # Verifica se um nó é uma folha 
-def folha(tree):
+def folha(tree,acao,env):
     """ Verifica se tree é um nó folha. """
     # Um nó folha é aquele que não tem filhos.
-    pass
+    estado, xn, yn = getState(getRam(env), raio)
+    performAction(moves[acao], env)
+    estado, x, y = getState(getRam(env), raio)
 
+    if x == xn and y == yn:
+        return True
 # Joga uma partida usando uma
 # sequência de ações
 def emula(acoes, env, mostrar):
     env.reset()
-
     while len(acoes)>0 and (not env.data.is_done()):
         a = acoes.pop(0)
         estado, xn, y = getState(getRam(env), raio)
         performAction(a, env)
         if mostrar:
             env.render()
-
     estado, x, y = getState(getRam(env), raio)
-    
     return estado, x, env.data.is_done()
 def atingiuObj(nos):
     
     return False
 def expande(nos,acao,env,mostrar):
-    print(f'estou em expande com o no: {nos.g} e acao = {acao}')
+    if folha(nos,acao,env):
+        return False
     acoes = []
-
     raiz = nos
-    while raiz.pai != None:
-        print(nos.g)
-        print(nos.pai.g)
-        input('wait')
-    # 2) Atribua raiz a uma variável neto
+    while raiz.pai is not None:
+        # 2) Atribua raiz a uma variável neto
         neto = raiz
-    # 3) faça raiz = seu próprio 
+        # 3) faça raiz = seu próprio 
         raiz = raiz.pai
     # 4) verifique qual a ação de raiz leva ao nó neto
-        for acao, filho in nos.filhos.items():
+        for m,filho in raiz.filhos.items():
             if filho == neto:
-    # 5) faça um append dessa ação na lista acoes
-                acoes.append(acao)
-        
+        # 5) faça um append dessa ação na lista acoes
+                acoes.append(moves[m])
         # inverte a lista de ações e imprime para debug
+    acoes.append(moves[acao])
     acoes.reverse()
     print('ACOES:  (  ', len(acoes), ' ): ',  acoes)
     estado, x, over = emula(acoes, env, mostrar)
     maxX            = max(x, 0)
     obj = False
     obj             = obj or checaObj(estado, x)
-    nos.filhos = {}
+    if not nos.filhos:
+        nos.filhos = {}
     nos.filhos[acao]              = Tree(estado, g=nos.g + 1, h=heuristica(estado,x),
                             pai=nos, terminal=over, obj=obj)
     return nos.filhos[acao]
 # Expande a árvore utilizando a heurística
 def argmin(nos):
-    
-    print(f'min de nos = {nos}')
-    input('wait')
-    return 
+    return sorted(nos,key=lambda i: i.h)[0]
 
 def buscaGulosa(nos,env,mostrar):
     if len(nos) == 1:
         no = nos[0]
     else:
         no = argmin(nos)
-    sl = {}
-    for a in moves.keys():
-        sl[a] = expande(no,a,env,mostrar) 
+    sl = [expande(no,a,env,mostrar) for a in moves.keys()]
+    if False in sl:
+        sl = [i for i in no.pai.filhos.values()]
+        sl.remove(no)
+        action = None
+        for a,filho in no.pai.filhos.items():
+            if filho == no:
+                action = a
+        if action:
+            no.pai.filhos.pop(action)
+        if len(no.pai.filhos) == 0:
+            n = no.pai
+            s = [i for i in no.pai.pai.filhos.values()]
+            s.remove(n)
+            sl = s
+            print(sl)
     if any(atingiuObj(s) for s in sl):
         return filter(atingiuObj,sl)[0]
-    print(no.g)
-    print(no.filhos)
     if len(nos) == 0:
         return None
     return buscaGulosa(sl,env,mostrar)
