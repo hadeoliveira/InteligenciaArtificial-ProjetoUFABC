@@ -79,8 +79,9 @@ def melhor_filho(tree):
     # 5) Caso contrário retorna aquele com o menor f
     else:
         # Implementar lógica para ordenar lista com menor f dos filhos
-        menor, f = min(melhores, key= lambda filho: (filho.g + filho.h))
-        return menor, f # retorna uma tupla (no, f)
+        print(melhores)
+        menorFilho, menorHeuristica = sorted(melhores, key=lambda filho: filho[1])[0]
+        return menorFilho, menorHeuristica  # retorna uma tupla (no, f)
     
 # Nossa heurística é a quantidade
 # de passos mínimos estimados para
@@ -101,7 +102,7 @@ def checaObj(estado, x):
 def folha(tree):
     """ Verifica se tree é um nó folha. """
     # Um nó folha é aquele que não tem filhos.
-    if all(node is None for node in tree.filhos):
+    if tree.filhos is None:
         return True
     else: 
         return False
@@ -155,7 +156,7 @@ def expande(tree, env, mostrar):
             for acao, movimento in moves.items():
                 if raiz.filhos[acao] == neto:
         # 5) faça um append dessa ação na lista acoes
-                    acoes.append(acao)
+                    acoes.append(movimento)
         
         # inverte a lista de ações e imprime para debug
         acoes.reverse()
@@ -194,15 +195,16 @@ def atingiuObj(tree):
         return(tree.eh_objetivo, [])
 
     # 2) Se o conjunto de filhos é None, retorna falso e lista vazia, pois não atingiu o obj
-    if all(node is None for node in tree.filhos):
+    # if all(node is None for node in tree.filhos):
+    if tree.filhos is None:
         return(False, [])
 
     # 3) Se nenhum dos anteriores retornou, para cada movimento "k" e valor "v" possível do dicionário moves:
     #       chama recursivamente atingiuObj com o filho do movimento "k" e recebe obj, acoes
     #       Se obj for verdadeiro, retorna obj e a lista de acoes concatenado com "v"
-    for k,v in moves.items:
+    for k, v in moves.items():
         objetivo, acoes = atingiuObj(tree.filhos[k]) 
-        if objetivo == True:
+        if objetivo:
             return (objetivo, acoes.append(v))
     
     # 4) Se chegar ao final do laço sem retorna, retorne falso e vazio
