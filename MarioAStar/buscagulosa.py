@@ -88,12 +88,13 @@ def checaObj(estado, x):
     return x>4800
 
 # Verifica se um nó é uma folha 
-def folha(tree,acao,env):
+def folha(tree,env):
     """ Verifica se tree é um nó folha. """
     # Um nó folha é aquele que não tem filhos.
-    estado, xn, yn = getState(getRam(env), raio)
-    performAction(moves[acao], env)
-    estado, x, y = getState(getRam(env), raio)
+    for acao in moves.values():
+        estado, xn, yn = getState(getRam(env), raio)
+        performAction(acao, env)
+        estado, x, y = getState(getRam(env), raio)
 
     if x == xn and y == yn:
         return True
@@ -113,8 +114,6 @@ def atingiuObj(nos):
     
     return False
 def expande(nos,acao,env,mostrar):
-    if folha(nos,acao,env):
-        return False
     acoes = []
     raiz = nos
     while raiz.pai is not None:
@@ -130,7 +129,7 @@ def expande(nos,acao,env,mostrar):
         # inverte a lista de ações e imprime para debug
     acoes.append(moves[acao])
     acoes.reverse()
-    print('ACOES:  (  ', len(acoes), ' ): ',  acoes)
+    # print('ACOES:  (  ', len(acoes), ' ): ',  acoes)
     estado, x, over = emula(acoes, env, mostrar)
     maxX            = max(x, 0)
     obj = False
@@ -145,26 +144,17 @@ def argmin(nos):
     return sorted(nos,key=lambda i: i.h)[0]
 
 def buscaGulosa(nos,env,mostrar):
+    for no in nos:
+        if folha(no,env):
+            nos.remove(no)
+    
     if len(nos) == 1:
         no = nos[0]
     else:
         no = argmin(nos)
+    print(no)
     sl = [expande(no,a,env,mostrar) for a in moves.keys()]
-    if False in sl:
-        sl = [i for i in no.pai.filhos.values()]
-        sl.remove(no)
-        action = None
-        for a,filho in no.pai.filhos.items():
-            if filho == no:
-                action = a
-        if action:
-            no.pai.filhos.pop(action)
-        if len(no.pai.filhos) == 0:
-            n = no.pai
-            s = [i for i in no.pai.pai.filhos.values()]
-            s.remove(n)
-            sl = s
-            print(sl)
+    
     if any(atingiuObj(s) for s in sl):
         return filter(atingiuObj,sl)[0]
     if len(nos) == 0:
